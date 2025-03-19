@@ -1,0 +1,11 @@
+{
+    "id": "1",
+    "name": "sample",
+    "description": "A sample StepConfig",
+    "step_type": 0,
+    "input_config": "{\n    \"payload\": {\n        \"user_prompt\": \"Tell me a joke!\",\n        \"system_prompt\": \"You're a funny assistant.\"\n    }\n}",
+    "model_query_config": "{\n    \"model_key\": \"GEMINI_FLASH\",\n    \"parameters\": {\n        \"temperature\": \"0.7\"\n    },\n    \"system_prompt\": \"%system_prompt%\",\n    \"user_prompt\": \"%user_prompt%\"\n}",
+    "function_call_config": "{\n    \"function_name\": \"\",\n    \"request\": \"\"\n}",
+    "output_config": "{\n    \"payload\": {\n        \"user_prompt\": \"Hahaha\"\n    }\n}",
+    "metadata": "{\n    \"timestamp\": 1742349184,\n    \"source\": \"create_sample\",\n    \"version\": \"1.0\"\n}"
+}

@@ -1,0 +1,11 @@
+{
+    "id": "1",
+    "name": "sample",
+    "description": "A sample FunctionCall StepConfig",
+    "step_type": 1,
+    "input_config": "{\n    \"payload\": {\n        \"user_prompt\": \"Tell me a joke!\",\n        \"system_prompt\": \"You're a funny assistant.\"\n    }\n}",
+    "model_query_config": "{\n    \"model_key\": \"\",\n    \"parameters\": {},\n    \"system_prompt\": \"\",\n    \"user_prompt\": \"\"\n}",
+    "function_call_config": "{\n    \"function_name\": \"gcp_firestore_log\",\n    \"request\": \"%data%\"\n}",
+    "output_config": "{\n    \"payload\": {\n        \"user_prompt\": \"Hahaha\"\n    }\n}",
+    "metadata": "{\n    \"timestamp\": 1742349184,\n    \"source\": \"create_sample\",\n    \"version\": \"1.0\"\n}"
+}
