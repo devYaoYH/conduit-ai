@@ -1,29 +1,36 @@
+import anthropic
 import os
 import time
-from google import genai
 from llm_scheduler.executor.executor import ModelQueryExecutor
 from llm_scheduler.config_schema.execution_schema import ModelQueryConfig
 from llm_scheduler.execution_environment.execution_environment import log_stats
 
 
-GEMINI_API_KEY = os.environ['GEMINI_API_KEY']
+ANTHROPIC_API_KEY = os.environ['ANTHROPIC_API_KEY']
 
-class GeminiExecutor(ModelQueryExecutor):
+class ClaudeExecutor(ModelQueryExecutor):
     def __init__(self, model_query_config: ModelQueryConfig):
         super().__init__(model_query_config)
         self.backoff_time = 0.2
         self.retry_attempts_remaining = 5
-        self.client = genai.Client(api_key=GEMINI_API_KEY)
+        self.client = anthropic.Anthropic(
+            api_key=ANTHROPIC_API_KEY,
+        )
 
     def execute(self) -> str:
         print(f"Executing query: {self} {self.model_query_config.user_prompt}")
+
+        print(**self.model_query_config.parameters)
+
         try:
-            model_config = self.model_query_config.parameters
-            model_config["system_instruction"] = self.model_query_config.system_prompt
-            response = self.client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=self.model_query_config.user_prompt,
-                config=model_config,
+            response = self.client.messages.create(
+                model="claude-3-5-haiku-20241022",
+                max_tokens=1024,
+                messages=[
+                    {"role": "user", "content": self.model_query_config.user_prompt}
+                ],
+                system=self.model_query_config.system_prompt,
+                **self.model_query_config.parameters
             )
         except Exception as e:
             print(f"Error executing query: {e}")
@@ -35,7 +42,12 @@ class GeminiExecutor(ModelQueryExecutor):
             else:
                 raise ValueError("Failed to execute query after multiple retries.")
         log_stats({
-            "num_tokens": response.usage_metadata.candidates_token_count,
-            "num_gemini_calls": 1,
+            "num_claude_output_tokens": response.usage.output_tokens,
+            "num_claude_calls": 1,
         })
-        return response.text
+
+        # Look for text content in response
+        for content in response.content:
+            if content.type == "text":
+                return content.text
+        return str(response.content)
